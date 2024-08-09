@@ -1,0 +1,10 @@
+div.guessthenumber {
+    text-align: center;
+    font-size: large;
+}
+
+input[type=number] {
+    -webkit-user-select: none;
+    user-select: none;
+    width: 40px;
+}

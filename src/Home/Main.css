@@ -1,0 +1,10 @@
+div.main {
+    align-items: center;
+    align-content: center;
+    text-align: center;
+
+    font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+    color: white;
+
+    padding: 10px;
+}
