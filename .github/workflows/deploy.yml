@@ -3,10 +3,10 @@ name: Deploy to S3
 on:
   push:
     branches:
-      - main  # Or the branch you want to deploy from
+      - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,21 +16,28 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 18  # or the version you need
+        node-version: 22
+        
+    - name: Install deps
+      run: |
+        npm i pnpm -g \
+        pnpm i
+        
+    - name: Build
+      run: pnpm build
 
-    - name: Install dependencies
-      run: pnpm i  # or yarn install
-
-    - name: Build the project
-      run: pnpm build  # replace with your build command
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2
 
     - name: Deploy to S3
-      uses: aws-actions/s3-sync-action@v1.1.1
-      with:
-        args: --acl public-read --delete
-      env:
-        AWS_S3_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ${{ secrets.AWS_REGION }}
-        SOURCE_DIR: build  # or your build directory
+      run: |
+        aws s3 sync . s3://jj-main --delete
+
+    - name: Invalidate CloudFront cache
+      run: |
+        aws cloudfront create-invalidation --distribution-id EFR4CMQELM3AF --paths "/*"
+        
