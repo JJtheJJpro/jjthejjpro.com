@@ -1,8 +1,8 @@
 import App from "./App";
 import React from "react";
 import ReactDOM from "react-dom/client";
+import "./node-patcher";
 import "./main.css";
-import "buffer";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root')!
