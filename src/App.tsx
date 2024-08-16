@@ -1,8 +1,8 @@
-import { useState } from "react"
+import Games from "./Games/Games";
 import Main from "./Home/Main";
 import Monsters from "./Monsters/Monsters";
+import { useState } from "react";
 import "./App.css";
-import Games from "./Games/Games";
 
 function Tab(d: { text: string, sel: boolean, onClick?: React.MouseEventHandler<HTMLParagraphElement> }) {
     if (d.sel) {
