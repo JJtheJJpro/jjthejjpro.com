@@ -1,7 +1,7 @@
+import "./node-patcher";
 import App from "./App";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./node-patcher";
 import "./main.css";
 
 const root = ReactDOM.createRoot(
