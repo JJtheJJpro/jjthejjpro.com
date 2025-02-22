@@ -1,4 +1,4 @@
-export default function Games() {
+export default function Projects() {
     return (
         <>
         </>

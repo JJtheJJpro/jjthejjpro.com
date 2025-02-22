@@ -1,32 +1,68 @@
-div.top {
-    top: 0;
-    background-color: green;
-    color: white;
-    width: 100%;
-    display: flex;
+@keyframes topbar {
+    from {
+        background-color: var(--start-color);
+    }
+    to {
+        background-color: var(--end-color);
+    }
 }
 
-p.top {
-    margin-left: 30px;
-    font-size: xx-large;
-    color: black;
-    -webkit-user-select: none;
-    user-select: none;
+button.topbar {
+    height: 100%;
+    font-size: 30px;
+    padding: 8px;
     cursor: pointer;
 }
 
-p.top:hover {
-    color: darkblue;
+button.topbar.home {
+    color: #00C000;
+    &:hover {
+        background-color: #00FF001F;
+    }
+}
+button.topbar.home.selected {
+    --start-color: #00FF002F;
+    --end-color: #00FF004A;
+    animation: topbar 2s infinite alternate;
 }
 
-p.top:active {
-    color: blue;
+button.topbar.projects {
+    color: #2020FF;
+    &:hover {
+        background-color: #0000FF3F;
+    }
+}
+button.topbar.projects.selected {
+    --start-color: #0000FF5F;
+    --end-color: #0000FF7F;
+    animation: topbar 2s infinite alternate;
 }
 
-img.top {
-    max-width: 100%;
-    max-height: 100%;
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
+button.topbar.games {
+    color: #E000E0;
+    &:hover {
+        background-color: #FF00FF2F;
+    }
+}
+button.topbar.games.selected {
+    --start-color: #FF00FF4F;
+    --end-color: #FF00FF6F;
+    animation: topbar 2s infinite alternate;
+}
+
+button.topbar.monsters {
+    color: red;
+    &:hover {
+        background-color: #FF00002F;
+    }
+}
+button.topbar.monsters.selected {
+    --start-color: #FF00006F;
+    --end-color: #FF00008F;
+    animation: topbar 2s infinite alternate;
+}
+
+nav.topbar {
+    height: 55px;
+    border-bottom: 1px solid gray;
 }

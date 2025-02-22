@@ -20,7 +20,7 @@ jobs:
         
     - name: Install deps
       run: |
-        npm i pnpm -g
+        npm i pnpm@latest-10 -g
         pnpm i
         
     - name: Build

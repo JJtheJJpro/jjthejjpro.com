@@ -1,558 +1,476 @@
-import mqtt from "async-mqtt";
-import { useEffect, useState } from "react";
-import "./Monsters.css";
+import { useEffect, useState } from 'react';
 
-const wss = 'wss://broker.hivemq.com:8884/mqtt';
-
-function Monsters() {
-    const [connectState, setConnectState] = useState("Listening for host...");
-    const [cmdSend, setCmdSend] = useState("");
-    const [monsterNames, setMonsterNames] = useState(["Monster 1",
-        "Monster 2",
-        "Monster 3",
-        "Monster 4",
-        "Monster 5",
-        "Monster 6",
-        "Monster 7",
-        "Monster 8",
-        "Monster 9",
-        "Monster 10"]);
-    const [connected, setConnected] = useState(false);
-    const [actType, setInput] = useState<0 | 1>(1); // 0 - keyboard, 1 - GUI
-    const [activeMonsters, setActiveMonsters] = useState([...Array(32)].map(() => false));
-    const [keyLastPressed, setKeyLastPressed] = useState<string | null>(null);
-
-    let MQTT: mqtt.AsyncMqttClient | undefined = undefined;
+export default function Monsters() {
+    const [inputtype, setInput] = useState<(0 | 1 | 2)>(1);
+    const [keyguide, setGuide] = useState(false);
+    const [datamode, setDatamode] = useState(false);
+    const [names, setNames] = useState(["Monster 1", "Monster 2", "Monster 3", "Monster 4", "Monster 5", "Monster 6", "Monster 7", "Monster 8", "Monster 9", "Monster 10"]);
+    const [monsts, setMonsts] = useState([
+        false, false, false, false, false, false, false, false, false, false, // P
+        false, false, false, false, false, false, false, false, false, false, // A
+        false, false, false, false, false, false, false, false, false, false, // X
+        false, false // D, G
+    ]);
+    const [keysdown, setKeysdown] = useState<Record<string, boolean>>({});
+    
+    
 
     useEffect(() => {
-        window.addEventListener('keydown', handleKeyDown);
-        window.addEventListener('keyup', handleKeyUp);
+        const uKeypress = (e: KeyboardEvent) => {
+            if (e.key == '1' || e.key == '2' || e.key == '3' || e.key == '4' || e.key == '5' || e.key == '6' || e.key == '7' || e.key == '8' || e.key == '9' || e.key == '0') {
+                let tks = keysdown;
+                tks[e.key] = true;
+                setKeysdown(tks);
+                switch (e.key) {
+                    case '1':
+                        let s1 = prompt('Input the name of the monster');
+                        if (s1 != null) {
+                            let tn = names;
+                            tn[0] = s1 == '' ? 'Monster 1' : s1;
+                            setNames([...tn]);
+                        }
+                        break;
+                    case '2':
+                        let s2 = prompt('Input the name of the monster');
+                        if (s2 != null) {
+                            let tn = names;
+                            tn[1] = s2 == '' ? 'Monster 2' : s2;
+                            setNames([...tn]);
+                        }
+                        break;
+                    case '3':
+                        let s3 = prompt('Input the name of the monster');
+                        if (s3 != null) {
+                            let tn = names;
+                            tn[2] = s3 == '' ? 'Monster 3' : s3;
+                            setNames([...tn]);
+                        }
+                        break;
+                    case '4':
+                        let s4 = prompt('Input the name of the monster');
+                        if (s4 != null) {
+                            let tn = names;
+                            tn[3] = s4 == '' ? 'Monster 4' : s4;
+                            setNames([...tn]);
+                        }
+                        break;
+                    case '5':
+                        let s5 = prompt('Input the name of the monster');
+                        if (s5 != null) {
+                            let tn = names;
+                            tn[4] = s5 == '' ? 'Monster 5' : s5;
+                            setNames([...tn]);
+                        }
+                        break;
+                    case '6':
+                        let s6 = prompt('Input the name of the monster');
+                        if (s6 != null) {
+                            let tn = names;
+                            tn[5] = s6 == '' ? 'Monster 6' : s6;
+                            setNames([...tn]);
+                        }
+                        break;
+                    case '7':
+                        let s7 = prompt('Input the name of the monster');
+                        if (s7 != null) {
+                            let tn = names;
+                            tn[6] = s7 == '' ? 'Monster 7' : s7;
+                            setNames([...tn]);
+                        }
+                        break;
+                    case '8':
+                        let s8 = prompt('Input the name of the monster');
+                        if (s8 != null) {
+                            let tn = names;
+                            tn[7] = s8 == '' ? 'Monster 8' : s8;
+                            setNames([...tn]);
+                        }
+                        break;
+                    case '9':
+                        let s9 = prompt('Input the name of the monster');
+                        if (s9 != null) {
+                            let tn = names; 5
+                            tn[8] = s9 == '' ? 'Monster 9' : s9;
+                            setNames([...tn]);
+                        }
+                        break;
+                    case '0':
+                        let s0 = prompt('Input the name of the monster');
+                        if (s0 != null) {
+                            let tn = names;
+                            tn[9] = s0 == '' ? 'Monster 10' : s0;
+                            setNames([...tn]);
+                        }
+                        break;
+                }
+            }
+        };
+        const uKeydown = (e: KeyboardEvent) => {
+            if (!keysdown[e.key]) {
+                let tks = keysdown;
+                tks[e.key] = true;
+                setKeysdown(tks);
+                switch (e.key) {
+                    case '=':
+                        setGuide(!keyguide);
+                        break;
+                    case '-':
+                        setDatamode(!datamode);
+                        break;
+                    case 'Enter':
+                        reset();
+                        break;
+                    case 'ArrowLeft':
+                        setInput(inputtype == 0 ? 2 : inputtype == 1 ? 0 : 1);
+                        break;
+                    case 'ArrowRight':
+                        setInput(inputtype == 0 ? 1 : inputtype == 1 ? 2 : 0);
+                        break;
+                }
 
-        const msgl = (_: string, payload: Buffer) => {
-            let pl = payload.toString();
-            if (pl.startsWith('server ')) {
-                switch (pl.replace('server ', '')) {
-                    case "subconnected":
-                        setConnected(false);
-                        setConnectState("Host Connected.  Waiting for Arduino connection...");
+                if (inputtype != 2) {
+                    switch (e.key) {
+                        case 'q':
+                            monstparse(0, true);
+                            break;
+                        case 'w':
+                            monstparse(1, true);
+                            break;
+                        case 'e':
+                            monstparse(2, true);
+                            break;
+                        case 'r':
+                            monstparse(3, true);
+                            break;
+                        case 't':
+                            monstparse(4, true);
+                            break;
+                        case 'y':
+                            monstparse(5, true);
+                            break;
+                        case 'u':
+                            monstparse(6, true);
+                            break;
+                        case 'i':
+                            monstparse(7, true);
+                            break;
+                        case 'o':
+                            monstparse(8, true);
+                            break;
+                        case 'p':
+                            monstparse(9, true);
+                            break;
+
+                        case 'a':
+                            monstparse(10, true);
+                            break;
+                        case 's':
+                            monstparse(11, true);
+                            break;
+                        case 'd':
+                            monstparse(12, true);
+                            break;
+                        case 'f':
+                            monstparse(13, true);
+                            break;
+                        case 'g':
+                            monstparse(14, true);
+                            break;
+                        case 'h':
+                            monstparse(15, true);
+                            break;
+                        case 'j':
+                            monstparse(16, true);
+                            break;
+                        case 'k':
+                            monstparse(17, true);
+                            break;
+                        case 'l':
+                            monstparse(18, true);
+                            break;
+                        case ';':
+                            monstparse(19, true);
+                            break;
+
+                        case 'z':
+                            monstparse(20, true);
+                            break;
+                        case 'x':
+                            monstparse(21, true);
+                            break;
+                        case 'c':
+                            monstparse(22, true);
+                            break;
+                        case 'v':
+                            monstparse(23, true);
+                            break;
+                        case 'b':
+                            monstparse(24, true);
+                            break;
+                        case 'n':
+                            monstparse(25, true);
+                            break;
+                        case 'm':
+                            monstparse(26, true);
+                            break;
+                        case ',':
+                            monstparse(27, true);
+                            break;
+                        case '.':
+                            monstparse(28, true);
+                            break;
+                        case '/':
+                            monstparse(29, true);
+                            break;
+
+                        case ' ':
+                            monstparse(30, !monsts[30]);
+                            break;
+                        case "'":
+                            monstparse(31, true);
+                            break;
+                    }
+                }
+            }
+        };
+        const uKeyup = (e: KeyboardEvent) => {
+            let tks = keysdown;
+            tks[e.key] = false;
+            setKeysdown(tks);
+            if (inputtype != 2) {
+                switch (e.key) {
+                    case 'q':
+                        monstparse(0, false);
                         break;
-                    case "connecting":
-                        setConnectState("Arduino detected.  Connecting...");
+                    case 'w':
+                        monstparse(1, false);
                         break;
-                    case "connected":
-                        setConnected(true);
-                        setConnectState("Arduino connected!");
+                    case 'e':
+                        monstparse(2, false);
                         break;
-                    case "close":
-                        setConnected(false);
-                        setConnectState("Listening for host...");
+                    case 'r':
+                        monstparse(3, false);
                         break;
-                    default:
-                        console.log(`unknown server cmd: '${pl.replace('server ', '')}'`)
+                    case 't':
+                        monstparse(4, false);
+                        break;
+                    case 'y':
+                        monstparse(5, false);
+                        break;
+                    case 'u':
+                        monstparse(6, false);
+                        break;
+                    case 'i':
+                        monstparse(7, false);
+                        break;
+                    case 'o':
+                        monstparse(8, false);
+                        break;
+                    case 'p':
+                        monstparse(9, false);
+                        break;
+
+                    case 'a':
+                        monstparse(10, false);
+                        break;
+                    case 's':
+                        monstparse(11, false);
+                        break;
+                    case 'd':
+                        monstparse(12, false);
+                        break;
+                    case 'f':
+                        monstparse(13, false);
+                        break;
+                    case 'g':
+                        monstparse(14, false);
+                        break;
+                    case 'h':
+                        monstparse(15, false);
+                        break;
+                    case 'j':
+                        monstparse(16, false);
+                        break;
+                    case 'k':
+                        monstparse(17, false);
+                        break;
+                    case 'l':
+                        monstparse(18, false);
+                        break;
+                    case ';':
+                        monstparse(19, false);
+                        break;
+
+                    case 'z':
+                        monstparse(20, false);
+                        break;
+                    case 'x':
+                        monstparse(21, false);
+                        break;
+                    case 'c':
+                        monstparse(22, false);
+                        break;
+                    case 'v':
+                        monstparse(23, false);
+                        break;
+                    case 'b':
+                        monstparse(24, false);
+                        break;
+                    case 'n':
+                        monstparse(25, false);
+                        break;
+                    case 'm':
+                        monstparse(26, false);
+                        break;
+                    case ',':
+                        monstparse(27, false);
+                        break;
+                    case '.':
+                        monstparse(28, false);
+                        break;
+                    case '/':
+                        monstparse(29, false);
+                        break;
+                        
+                    case "'":
+                        monstparse(31, false);
                         break;
                 }
             }
         };
 
-        mqtt.connectAsync(wss).then(v => {
-            if (v.connected) {
-                MQTT = v;
-                MQTT.on('message', msgl);
-                MQTT.subscribe('jj-monster-controller-mega-2341-0042');
-            }
-        }, rej => {
-            console.error(rej);
-            setConnectState(`Listening for host...(error: "${rej}")`);
-        });
+        document.addEventListener('keypress', uKeypress);
+        document.addEventListener('keydown', uKeydown);
+        document.addEventListener('keyup', uKeyup);
 
         return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-            window.removeEventListener('keyup', handleKeyUp);
-            if (MQTT && MQTT.connected) {
-                MQTT.off('message', msgl);
-                MQTT.unsubscribe('jj-monster-controller-mega-2341-0042');
-            }
+            document.removeEventListener('keypress', uKeypress);
+            document.removeEventListener('keydown', uKeydown);
+            document.removeEventListener('keyup', uKeyup);
         };
-    }, [connected, actType, keyLastPressed]);
+    }, [keyguide, datamode, inputtype, monsts]);
 
-    function handleKeyDown(e: KeyboardEvent) {
-        if (connected && actType == 0 && keyLastPressed != e.code) {
-            setKeyLastPressed(e.code);
-
-            let t = activeMonsters;
-            switch (e.code.replace("Key", "").replace("Digit", "")) {
-                case "1":
-                    t[0] = true;
-                    setActiveMonsters([...t]);
-                    send("101");
-                    break;
-                case "2":
-                    t[1] = true;
-                    setActiveMonsters([...t]);
-                    send("102");
-                    break;
-                case "3":
-                    t[2] = true;
-                    setActiveMonsters([...t]);
-                    send("103");
-                    break;
-                case "4":
-                    t[3] = true;
-                    setActiveMonsters([...t]);
-                    send("104");
-                    break;
-                case "5":
-                    t[4] = true;
-                    setActiveMonsters([...t]);
-                    send("105");
-                    break;
-                case "6":
-                    t[5] = true;
-                    setActiveMonsters([...t]);
-                    send("106");
-                    break;
-                case "7":
-                    t[6] = true;
-                    setActiveMonsters([...t]);
-                    send("107");
-                    break;
-                case "8":
-                    t[7] = true;
-                    setActiveMonsters([...t]);
-                    send("108");
-                    break;
-                case "9":
-                    t[8] = true;
-                    setActiveMonsters([...t]);
-                    send("109");
-                    break;
-                case "0":
-                    t[9] = true;
-                    setActiveMonsters([...t]);
-                    send("110");
-                    break;
-                case "Q":
-                    t[10] = true;
-                    setActiveMonsters([...t]);
-                    send("111");
-                    break;
-                case "W":
-                    t[11] = true;
-                    setActiveMonsters([...t]);
-                    send("112");
-                    break;
-                case "E":
-                    t[12] = true;
-                    setActiveMonsters([...t]);
-                    send("113");
-                    break;
-                case "R":
-                    t[13] = true;
-                    setActiveMonsters([...t]);
-                    send("114");
-                    break;
-                case "T":
-                    t[14] = true;
-                    setActiveMonsters([...t]);
-                    send("115");
-                    break;
-                case "Y":
-                    t[15] = true;
-                    setActiveMonsters([...t]);
-                    send("116");
-                    break;
-                case "U":
-                    t[16] = true;
-                    setActiveMonsters([...t]);
-                    send("117");
-                    break;
-                case "I":
-                    t[17] = true;
-                    setActiveMonsters([...t]);
-                    send("118");
-                    break;
-                case "O":
-                    t[18] = true;
-                    setActiveMonsters([...t]);
-                    send("119");
-                    break;
-                case "P":
-                    t[19] = true;
-                    setActiveMonsters([...t]);
-                    send("120");
-                    break;
-                case "A":
-                    t[20] = true;
-                    setActiveMonsters([...t]);
-                    send("121");
-                    break;
-                case "S":
-                    t[21] = true;
-                    setActiveMonsters([...t]);
-                    send("122");
-                    break;
-                case "D":
-                    t[22] = true;
-                    setActiveMonsters([...t]);
-                    send("123");
-                    break;
-                case "F":
-                    t[23] = true;
-                    setActiveMonsters([...t]);
-                    send("124");
-                    break;
-                case "G":
-                    t[24] = true;
-                    setActiveMonsters([...t]);
-                    send("125");
-                    break;
-                case "H":
-                    t[25] = true;
-                    setActiveMonsters([...t]);
-                    send("126");
-                    break;
-                case "J":
-                    t[26] = true;
-                    setActiveMonsters([...t]);
-                    send("127");
-                    break;
-                case "K":
-                    t[27] = true;
-                    setActiveMonsters([...t]);
-                    send("128");
-                    break;
-                case "L":
-                    t[28] = true;
-                    setActiveMonsters([...t]);
-                    send("129");
-                    break;
-                case "Semicolon":
-                    t[29] = true;
-                    setActiveMonsters([...t]);
-                    send("130");
-                    break;
-                case "Space":
-                    t[30] = !t[30];
-                    setActiveMonsters([...t]);
-                    send(`${t[30] ? '1' : '0'}31`);
-                    break;
-                case "Period":
-                    t[31] = true;
-                    setActiveMonsters([...t]);
-                    send("132");
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-    function handleKeyUp(e: KeyboardEvent) {
-        if (connected && actType == 0) {
-            setKeyLastPressed(null);
-
-            let t = activeMonsters;
-            switch (e.code.replace("Key", "").replace("Digit", "")) {
-                case "1":
-                    t[0] = false;
-                    setActiveMonsters([...t]);
-                    send("001");
-                    break;
-                case "2":
-                    t[1] = false;
-                    setActiveMonsters([...t]);
-                    send("002");
-                    break;
-                case "3":
-                    t[2] = false;
-                    setActiveMonsters([...t]);
-                    send("003");
-                    break;
-                case "4":
-                    t[3] = false;
-                    setActiveMonsters([...t]);
-                    send("004");
-                    break;
-                case "5":
-                    t[4] = false;
-                    setActiveMonsters([...t]);
-                    send("005");
-                    break;
-                case "6":
-                    t[5] = false;
-                    setActiveMonsters([...t]);
-                    send("006");
-                    break;
-                case "7":
-                    t[6] = false;
-                    setActiveMonsters([...t]);
-                    send("007");
-                    break;
-                case "8":
-                    t[7] = false;
-                    setActiveMonsters([...t]);
-                    send("008");
-                    break;
-                case "9":
-                    t[8] = false;
-                    setActiveMonsters([...t]);
-                    send("009");
-                    break;
-                case "0":
-                    t[9] = false;
-                    setActiveMonsters([...t]);
-                    send("010");
-                    break;
-                case "Q":
-                    t[10] = false;
-                    setActiveMonsters([...t]);
-                    send("011");
-                    break;
-                case "W":
-                    t[11] = false;
-                    setActiveMonsters([...t]);
-                    send("012");
-                    break;
-                case "E":
-                    t[12] = false;
-                    setActiveMonsters([...t]);
-                    send("013");
-                    break;
-                case "R":
-                    t[13] = false;
-                    setActiveMonsters([...t]);
-                    send("014");
-                    break;
-                case "T":
-                    t[14] = false;
-                    setActiveMonsters([...t]);
-                    send("015");
-                    break;
-                case "Y":
-                    t[15] = false;
-                    setActiveMonsters([...t]);
-                    send("016");
-                    break;
-                case "U":
-                    t[16] = false;
-                    setActiveMonsters([...t]);
-                    send("017");
-                    break;
-                case "I":
-                    t[17] = false;
-                    setActiveMonsters([...t]);
-                    send("018");
-                    break;
-                case "O":
-                    t[18] = false;
-                    setActiveMonsters([...t]);
-                    send("019");
-                    break;
-                case "P":
-                    t[19] = false;
-                    setActiveMonsters([...t]);
-                    send("020");
-                    break;
-                case "A":
-                    t[20] = false;
-                    setActiveMonsters([...t]);
-                    send("021");
-                    break;
-                case "S":
-                    t[21] = false;
-                    setActiveMonsters([...t]);
-                    send("022");
-                    break;
-                case "D":
-                    t[22] = false;
-                    setActiveMonsters([...t]);
-                    send("023");
-                    break;
-                case "F":
-                    t[23] = false;
-                    setActiveMonsters([...t]);
-                    send("024");
-                    break;
-                case "G":
-                    t[24] = false;
-                    setActiveMonsters([...t]);
-                    send("025");
-                    break;
-                case "H":
-                    t[25] = false;
-                    setActiveMonsters([...t]);
-                    send("026");
-                    break;
-                case "J":
-                    t[26] = false;
-                    setActiveMonsters([...t]);
-                    send("027");
-                    break;
-                case "K":
-                    t[27] = false;
-                    setActiveMonsters([...t]);
-                    send("028");
-                    break;
-                case "L":
-                    t[28] = false;
-                    setActiveMonsters([...t]);
-                    send("029");
-                    break;
-                case "Semicolon":
-                    t[29] = false;
-                    setActiveMonsters([...t]);
-                    send("030");
-                    break;
-                case "Period":
-                    t[31] = false;
-                    setActiveMonsters([...t]);
-                    send("032");
-                    break;
-                default:
-                    break;
-            }
+    function monstparse(n: number, on: boolean) {
+        if (monsts[n] != on) {
+            let m = monsts;
+            m[n] = on;
+            setMonsts([...m]);
         }
     }
 
-    async function sendcmd() {
-        MQTT?.publish('jj-monster-controller-mega-2341-0042', `client ${cmdSend}`);
-    }
-
-    async function send(data: String) {
-        MQTT?.publish('jj-monster-controller-mega-2341-0042', `client ${data}`);
-    }
-
-    /**
-     * @param type 0 (P), 1 (A), 2 (X)
-     * @param num monster number
-     * @param on true for on, false for off
-     */
-    function parseMonster(type: 0 | 1 | 2, num: number, on: boolean) {
-        if (num < 1 || num > 10) {
-            if (num == 31 || num == 32) {
-                send(`${on ? 1 : 0}${num}`);
-                return;
-            }
-            console.error(`monster number must be between 1 and 10 or 31 or 32 (received ${num})`);
-            return;
-        }
-        else if (type == 1) {
-            num += 10;
-        }
-        else if (type == 2) {
-            num += 20;
-        }
-        send(`${on ? 1 : 0}${num < 10 ? "0" : ""}${num}`);
+    function reset() {
+        setMonsts([
+            false, false, false, false, false, false, false, false, false, false, // P
+            false, false, false, false, false, false, false, false, false, false, // A
+            false, false, false, false, false, false, false, false, false, false, // X
+            false, false // D, G
+        ]);
     }
 
     return (
-        <div className="monsters">
-            <div className="com">
-                <p>{connectState}</p>
-                <input title="Command to send to arduino" placeholder="Put custom command here" type="text" value={cmdSend} onChange={e => setCmdSend(e.target.value)} onKeyDown={e => {
-                    if (e.code == "Enter") {
-                        sendcmd();
-                    }
-                }}></input>
-                <button type="button" onClick={sendcmd}>Send</button>
+        <div className='monsters'>
+            <link rel='stylesheet' type='text/css' href="/src/Monsters/Monsters.css" />
+            <div className='main'>
+                <p className='title'>Monster Controller</p>
+                <p className='subtitle'>v0.1.0 Frontend Vite React JS</p>
             </div>
-
-            <table className={connected && actType == 1 ? "" : "disabled"}>
-                <thead>
-                    <tr>
-                        {monsterNames.map((name, i) => (
-                            <th className={i == 0 ? "l" : i == 9 ? "r" : ""} key={i} title={`Double click to change the name of ${name}`} onDoubleClick={() => {
-                                let input = prompt("Enter in a new monster name", name);
-                                if (input != null) {
-                                    let t = monsterNames;
-                                    t[i] = input;
-                                    setMonsterNames([...t]);
+            <div className='interface'>
+                <table className='interface'>
+                    <thead>
+                        <tr className='interface h'>
+                            {names.map((n, i) =>
+                                <th key={i} className='interface' onDoubleClick={() => {
+                                    let nn = prompt('Input the name of the monster');
+                                    if (nn != null) {
+                                        let nnames = names;
+                                        nnames[i] = nn;
+                                        setNames([...nnames]);
+                                    }
+                                }}>{n}{keyguide ? ` (${i + 1 < 10 ? i + 1 : 0})` : ''}</th>
+                            )}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {[0, 1, 2].map((_, i1) =>
+                            <tr key={i1} className='interface'>
+                                {monsts.slice(0 + i1 * 10, 10 + i1 * 10).map((m, i) =>
+                                    <td key={i} className={`i${inputtype == 1 ? '' : 'd'}${m ? 'a' : ''}`} onClick={() => {
+                                        if (inputtype == 1) {
+                                            monstparse(i + i1 * 10, !monsts[i + i1 * 10]);
+                                        }
+                                    }}>{i1 == 0 ? 'Power' : i1 == 1 ? 'Activate' : 'Alternate Activate'}{keyguide ? ` (${i1 == 0 ?
+                                        (i == 0 ? 'q' : i == 1 ? 'w' : i == 2 ? 'e' : i == 3 ? 'r' : i == 4 ? 't' : i == 5 ? 'y' : i == 6 ? 'u' : i == 7 ? 'i' : i == 8 ? 'o' : 'p') :
+                                        i1 == 1 ? (i == 0 ? 'a' : i == 1 ? 's' : i == 2 ? 'd' : i == 3 ? 'f' : i == 4 ? 'g' : i == 5 ? 'h' : i == 6 ? 'j' : i == 7 ? 'k' : i == 8 ? 'l' : ';') :
+                                            (i == 0 ? 'z' : i == 1 ? 'x' : i == 2 ? 'c' : i == 3 ? 'v' : i == 4 ? 'b' : i == 5 ? 'n' : i == 6 ? 'm' : i == 7 ? ',' : i == 8 ? '.' : '/')
+                                        })` : ''}</td>
+                                )}
+                            </tr>
+                        )}
+                        <tr className='interface'>
+                            <td className={`i${keyguide ? 'a' : ''}`} colSpan={2} onClick={() => setGuide(!keyguide)}>Key Guide (=): {keyguide ? 'On' : 'Off'}</td>
+                            <td className='i' colSpan={2} onClick={() => setDatamode(!datamode)}>GUI Update{keyguide ? ' (-)' : ''}: {datamode ? "Wait for data" : "Instant"}</td>
+                            <td className='i' colSpan={2} onClick={reset}>R E S E T{keyguide ? ' (Enter)' : ''}</td>
+                            <td className={`i${inputtype == 1 ? '' : 'd'}${monsts[30] ? 'a' : ''}`} colSpan={2} onClick={() => {
+                                if (inputtype == 1) {
+                                    monstparse(30, !monsts[30]);
                                 }
-                            }}>
-                                {name}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        {[...Array(10)].map((_, i) => (
-                            <td className={activeMonsters[i] ? (i == 0 ? "l active" : i == 9 ? "r active" : "active") : (i == 0 ? "l" : i == 9 ? "r" : "")} key={i} onClick={() => {
-                                let t = activeMonsters;
-                                t[i] = !activeMonsters[i];
-                                setActiveMonsters([...t]);
-                                parseMonster(0, i + 1, activeMonsters[i]);
-                            }}>
-                                Power
-                            </td>
-                        ))}
-                    </tr>
-                    <tr>
-                        {[...Array(10)].map((_, i) => (
-                            <td className={activeMonsters[i + 10] ? (i == 0 ? "l active" : i == 9 ? "r active" : "active") : (i == 0 ? "l" : i == 9 ? "r" : "")} key={i} onClick={() => {
-                                let t = activeMonsters;
-                                t[i + 10] = !activeMonsters[i + 10];
-                                setActiveMonsters([...t]);
-                                parseMonster(1, i + 1, activeMonsters[i + 10]);
-                            }}>
-                                Activate
-                            </td>
-                        ))}
-                    </tr>
-                    <tr>
-                        {[...Array(10)].map((_, i) => (
-                            <td className={activeMonsters[i + 20] ? (i == 0 ? "l active" : i == 9 ? "r active" : "active") : (i == 0 ? "l" : i == 9 ? "r" : "")} key={i} onClick={() => {
-                                let t = activeMonsters;
-                                t[i + 20] = !activeMonsters[i + 20];
-                                setActiveMonsters([...t]);
-                                parseMonster(2, i + 1, activeMonsters[i + 20]);
-                            }}>
-                                Alternate Activate
-                            </td>
-                        ))}
-                    </tr>
-                    <tr>
-                        {[...Array(8)].map((_, i) => (
-                            <td key={i} className="empty" />
-                        ))}
-                        <td className={activeMonsters[30] ? "active" : ""} onClick={() => {
-                            let t = activeMonsters;
-                            t[30] = !activeMonsters[30];
-                            setActiveMonsters([...t]);
-                            parseMonster(0, 31, activeMonsters[30]);
-                        }}>
-                            Door
-                        </td>
-                        <td className={activeMonsters[31] ? "r active" : "r"} onMouseDown={() => {
-                            let t = activeMonsters;
-                            t[31] = true;
-                            setActiveMonsters([...t]);
-                            parseMonster(0, 32, true);
-                        }} onMouseUp={() => {
-                            let t = activeMonsters;
-                            t[31] = false;
-                            setActiveMonsters([...t]);
-                            parseMonster(0, 32, false);
-                        }}>
-                            Garbage
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <table className={`switch${connected ? "" : " disabled"}`}>
-                <tbody>
-                    <tr>
-                        <td className={`switch l${actType == 0 ? (connected ? " active" : " dactive") : ""}`} onClick={() => setInput(0)}>
-                            Keyboard
-                        </td>
-                        <td className={`switch r${actType == 1 ? (connected ? " active" : " dactive") : ""}`} onClick={() => setInput(1)}>
-                            GUI
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                            }}>Door{keyguide ? ' (Space)' : ''}: {monsts[30] ? "Open" : "Closed"}</td>
+                            <td className={`i${inputtype == 1 ? '' : 'd'}${monsts[31] ? 'a' : ''}`} colSpan={2} onMouseDown={() => {
+                                if (inputtype == 1) {
+                                    monstparse(31, true);
+                                }
+                            }} onMouseUp={() => {
+                                if (inputtype == 1) {
+                                    monstparse(31, false);
+                                }
+                            }}>Garbage{keyguide ? " (')" : ''}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div className='type'>
+                <table className='type'>
+                    <tbody className='t'>
+                        <tr>
+                            <td className={`t${inputtype == 0 ? 'a' : ''}`} onClick={() => setInput(0)}>{inputtype == 0 && keyguide ? '<- ' : ''}Keyboard{inputtype == 0 && keyguide ? ' ->' : ''}</td>
+                            <td className={`t${inputtype == 1 ? 'a' : ''}`} onClick={() => setInput(1)}>{inputtype == 1 && keyguide ? '<- ' : ''}GUI+{inputtype == 1 && keyguide ? ' ->' : ''}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    );
+    )
 }
 
-export default Monsters;
+// Garbage code (saved because I could need it later)
+/*
+
+<tr className='interface'>
+    {monsts.slice(0, 10).map((m, i) =>
+        <td key={i} className={`i${inputtype == 1 ? '' : 'd'}${m ? 'a' : ''}`} onClick={() => {
+            if (inputtype == 1) {
+                monstparse(i, !monsts[i]);
+            }
+        }}>Power{keyguide ? ` (${i == 0 ? 'q' : i == 1 ? 'w' : i == 2 ? 'e' : i == 3 ? 'r' : i == 4 ? 't' : i == 5 ? 'y' : i == 6 ? 'u' : i == 7 ? 'i' : i == 8 ? 'o' : 'p'})` : ''}</td>
+    )}
+</tr>
+<tr className='interface'>
+    {monsts.slice(10, 20).map((m, i) =>
+        <td key={i} className={`i${inputtype == 1 ? '' : 'd'}${m ? 'a' : ''}`} onClick={() => {
+            if (inputtype == 1) {
+                monstparse(i + 10, !monsts[i + 10]);
+            }
+        }}>Activate{keyguide ? ` (${i == 0 ? 'a' : i == 1 ? 's' : i == 2 ? 'd' : i == 3 ? 'f' : i == 4 ? 'g' : i == 5 ? 'h' : i == 6 ? 'j' : i == 7 ? 'k' : i == 8 ? 'l' : ';'})` : ''}</td>
+    )}
+</tr>
+<tr className='interface'>
+    {monsts.slice(20, 30).map((m, i) =>
+        <td key={i} className={`i${inputtype == 1 ? '' : 'd'}${m ? 'a' : ''}`} onClick={() => {
+            if (inputtype == 1) {
+                monstparse(i + 20, !monsts[i + 20]);
+            }
+        }}>Alternate Activate{keyguide ? ` (${i == 0 ? 'z' : i == 1 ? 'x' : i == 2 ? 'c' : i == 3 ? 'v' : i == 4 ? 'b' : i == 5 ? 'n' : i == 6 ? 'm' : i == 7 ? ',' : i == 8 ? '.' : '/'})` : ''}</td>
+    )}
+</tr>
+
+*/
