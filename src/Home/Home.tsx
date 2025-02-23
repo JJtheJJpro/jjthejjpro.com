@@ -6,7 +6,7 @@ export default function Home() {
                 <p className='text'>
                     As you can tell, there is much to be done here...
                     <br />
-                    There are a few tabs that you can explore.  Have fun as you will, idek.
+                    There are a few tabs that you can explore.  Have fun as you will, idek.a
                 </p>
             </div>
         </>
