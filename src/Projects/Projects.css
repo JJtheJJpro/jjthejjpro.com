@@ -1,0 +1,23 @@
+p, a {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+p.title {
+    font-size: 50px;
+    font-weight: bold;
+    text-align: center;
+}
+
+a.bst {
+    font-size: 20px;
+    margin-left: 40px;
+}
+
+details {
+    margin-left: 40px;
+}
+
+summary, details {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 30px;
+}

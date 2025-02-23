@@ -7,6 +7,7 @@ import Games from './Games/Games';
 import Monsters from './Monsters/Monsters';
 import MonstersCSS from './Monsters/Monsters.css?raw';
 import HomeCSS from './Home/Home.css?raw';
+import ProjectsCSS from './Projects/Projects.css?raw';
 
 function Navigation() {
     const navigate = useNavigate();
@@ -17,8 +18,17 @@ function Navigation() {
         let style = document.createElement('style');
 
         if (location.pathname === '/monsters') {
+            setPage('monsters');
             style.innerHTML = MonstersCSS;
+        } else if (location.pathname === '/projects') {
+            setPage('projects');
+            style.innerHTML = ProjectsCSS;
+        } else if (location.pathname === '/games') {
+            setPage('games');
+            //style.innerHTML = GamesCSS;
+            style.innerHTML = HomeCSS;
         } else {
+            setPage('home');
             style.innerHTML = HomeCSS;
         }
 
@@ -33,19 +43,15 @@ function Navigation() {
         <nav className='topbar'>
             <button type='button' className={`topbar home${page == 'home' ? " selected" : ""}`} onClick={() => {
                 navigate("/");
-                setPage('home');
             }}>Home</button>
             <button type='button' className={`topbar projects${page == 'projects' ? " selected" : ""}`} onClick={() => {
                 navigate("/projects");
-                setPage('projects');
             }}>Projects</button>
             <button type='button' className={`topbar games${page == 'games' ? " selected" : ""}`} onClick={() => {
                 navigate("/games");
-                setPage('games');
             }}>Games</button>
             <button type='button' className={`topbar monsters${page == 'monsters' ? " selected" : ""}`} onClick={() => {
                 navigate("/monsters");
-                setPage('monsters');
             }}>Monsters</button>
         </nav>
     )
