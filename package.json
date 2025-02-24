@@ -7,7 +7,9 @@
         "dev": "vite",
         "build": "tsc -b && vite build",
         "lint": "eslint .",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "sam-build": "sam build",
+        "sam-deploy": "sam deploy --template-file .aws-sam/build/template.yaml --stack-name jjthejjpro-deploy-stack--capabilities CAPABILITY_IAM --parameter-overrides s3Bucket=jjthejjprohostingbucket --resolve-s3 --region us-east-1"
     },
     "dependencies": {
         "react": "^19.0.0",

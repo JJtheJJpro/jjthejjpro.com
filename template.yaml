@@ -1,0 +1,90 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Parameters:
+  s3Bucket:
+    Type: String
+    Default: jjthejjprohostingbucket
+    AllowedValues:
+      - jjthejjprohostingbucket
+
+Resources:
+  HostingBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${s3Bucket}
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - Authorization
+              - Content-Length
+            AllowedMethods:
+              - "GET"
+            AllowedOrigins:
+              - "*"
+            MaxAge: 3000
+  PrivateBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref HostingBucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject
+            Sid: APIReadForGetBucketObjects
+            Effect: Allow
+            Resource: !Sub arn:aws:s3:::${s3Bucket}/*
+            Principal:
+              CanonicalUser: !GetAtt OriginAccessIdentity.S3CanonicalUserId
+  OriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Sub "CloudFront Origin Access Identity for ${s3Bucket}"
+  CloudfrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - jjthejjpro.com
+        ViewerCertificate:
+          AcmCertificateArn: arn:aws:acm:us-east-1:891377238333:certificate/719a039e-aefe-4cac-acd6-e1037491d237
+          SslSupportMethod: sni-only
+        HttpVersion: http2
+        Origins:
+          - DomainName: !GetAtt HostingBucket.RegionalDomainName
+            Id: !Sub ${s3Bucket}
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${OriginAccessIdentity}
+        Enabled: true
+        DefaultRootObject: index.html
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          CachedMethods:
+            - GET
+            - HEAD
+          Compress: true
+          DefaultTTL: 86400
+          ForwardedValues:
+            Cookies:
+              Forward: none
+            QueryString: false
+          TargetOriginId: !Sub ${s3Bucket}
+          ViewerProtocolPolicy: redirect-to-https
+        CustomErrorResponses:
+          - ErrorCachingMinTTL: 300
+            ErrorCode: 400
+            ResponseCode: 200
+            ResponsePagePath: /
+          - ErrorCachingMinTTL: 300
+            ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /
+          - ErrorCachingMinTTL: 300
+            ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /
