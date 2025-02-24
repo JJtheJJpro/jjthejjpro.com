@@ -36,6 +36,7 @@ jobs:
     - name: Deploy to S3
       run: |
         aws s3 sync dist s3://jj-main --delete
+        aws s3 sync downloads s3://jj-main/downloads --recursive --acl public-read
 
     - name: Invalidate CloudFront cache
       run: |
