@@ -1,0 +1,12 @@
+div.main {
+    text-align: center;
+    margin: 10px;
+}
+
+p.title {
+    font-size: 60px;
+}
+
+p.text {
+    font-size: 30px;
+}

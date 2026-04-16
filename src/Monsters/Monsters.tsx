@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import styles from './Monsters.module.css';
 
 export default function Monsters() {
     const [inputtype, setInput] = useState<(0 | 1 | 2)>(1);
@@ -367,19 +368,19 @@ export default function Monsters() {
         ]);
     }
 
+    //<link rel='stylesheet' type='text/css' href="/src/Monsters/Monsters.css" />
     return (
-        <div className='monsters'>
-            <link rel='stylesheet' type='text/css' href="/src/Monsters/Monsters.css" />
-            <div className='main'>
-                <p className='title'>Monster Controller</p>
-                <p className='subtitle'>v0.1.0 Frontend Vite React JS</p>
+        <div className={styles.monsters}>
+            <div className={styles.main}>
+                <p className={styles.title}>Monster Controller</p>
+                <p className={styles.subtitle}>v0.1.0 Frontend Vite React JS</p>
             </div>
-            <div className='interface'>
-                <table className='interface'>
+            <div className={styles.interface}>
+                <table className={styles.interface}>
                     <thead>
-                        <tr className='interface h'>
+                        <tr className={styles.interfaceh}>
                             {names.map((n, i) =>
-                                <th key={i} className='interface' onDoubleClick={() => {
+                                <th key={i} className={styles.interface} onDoubleClick={() => {
                                     let nn = prompt('Input the name of the monster');
                                     if (nn != null) {
                                         let nnames = names;
