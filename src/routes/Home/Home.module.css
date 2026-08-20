@@ -1,0 +1,41 @@
+/* src/routes/Home/Home.module.css */
+.container {
+    --theme-glow: rgba(59, 130, 246, 0.15);
+    --theme-accent: #38bdf8;
+    --theme-gradient: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: 20px;
+    padding: 3.5rem 2.5rem;
+    text-align: center;
+    box-shadow: 0 0 30px var(--theme-glow);
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: rgba(56, 189, 248, 0.15);
+    color: var(--theme-accent);
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: var(--theme-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+}
+
+.subtitle {
+    color: #94a3b8;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+}

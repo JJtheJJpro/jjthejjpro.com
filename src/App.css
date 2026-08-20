@@ -1,68 +1,191 @@
-@keyframes topbar {
+/* src/App.css */
+.app-layout {
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Base Fullscreen Background Layer */
+.bg-gradient-layer {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-color: #0b0f19;
+
+    /* Smooth 0.8s transition between theme changes */
+    transition: background 0.8s ease-in-out;
+}
+
+/* ----------------------------------------------------
+   THEME 1: HOME (Cyan / Blue - Top Left to Bottom Right)
+   ---------------------------------------------------- */
+.app-layout[data-theme="home"] .bg-gradient-layer {
+    background-image:
+        radial-gradient(at 10% 10%, rgba(56, 189, 248, 0.25) 0px, transparent 55%),
+        radial-gradient(at 90% 85%, rgba(59, 130, 246, 0.20) 0px, transparent 55%),
+        linear-gradient(135deg, #070e17 0%, #0b1528 100%);
+}
+
+/* ----------------------------------------------------
+   THEME 2: PROJECTS (Purple / Pink - Top Right to Center Left)
+   ---------------------------------------------------- */
+.app-layout[data-theme="projects"] .bg-gradient-layer {
+    background-image:
+        radial-gradient(at 85% 15%, rgba(236, 72, 153, 0.25) 0px, transparent 50%),
+        radial-gradient(at 15% 75%, rgba(168, 85, 247, 0.22) 0px, transparent 55%),
+        linear-gradient(225deg, #120917 0%, #1a0b26 100%);
+}
+
+/* ----------------------------------------------------
+   THEME 3: GAMES (Emerald / Gold - Bottom Left to Top Center)
+   ---------------------------------------------------- */
+.app-layout[data-theme="games"] .bg-gradient-layer {
+    background-image:
+        radial-gradient(at 50% 5%, rgba(245, 158, 11, 0.20) 0px, transparent 50%),
+        radial-gradient(at 10% 90%, rgba(16, 185, 129, 0.25) 0px, transparent 55%),
+        linear-gradient(45deg, #061510 0%, #0d241b 100%);
+}
+
+/* Floating Navigation Bar */
+.navbar-container {
+    display: flex;
+    justify-content: center;
+    position: sticky;
+    top: 1.5rem;
+    z-index: 100;
+}
+
+.nav-pills {
+    display: flex;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(12px);
+    padding: 0.35rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+.tab {
+    padding: 0.6rem 1.5rem;
+    border-radius: 9999px;
+    color: #9ca3af;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.25s ease;
+}
+
+.tab:hover {
+    color: #f3f4f6;
+}
+
+/* Tab active states matching respective theme glows */
+.tab.active.home-tab {
+    background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(56, 189, 248, 0.4);
+}
+
+.tab.active.projects-tab {
+    background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(236, 72, 153, 0.4);
+}
+
+.tab.active.games-tab {
+    background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+}
+
+.content-area {
+    flex: 1;
+    /* Pushes the footer to the bottom of the page even on short screens */
+}
+
+.app-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    padding: 2.5rem 1rem 1.5rem;
+    margin-top: 4rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.social-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.social-link {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+
+    /* Black-transparent container styling */
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+
+    color: rgba(255, 255, 255, 0.6);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.social-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+
+    /* Brightens the dark SVG paths on dark backgrounds */
+    filter: brightness(0) invert(0.8);
+    transition: filter 0.25s ease;
+}
+
+.social-link:hover .social-icon {
+    filter: brightness(0) invert(1);
+}
+
+/* Hover effect: Glows, brightens icon, and lifts up */
+.social-link:hover {
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.7);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.footer-credits {
+    color: #6b7280;
+    font-size: 0.8rem;
+}
+
+/* Page content entry animation */
+.page-transition {
+    animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
     from {
-        background-color: var(--start-color);
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
     }
+
     to {
-        background-color: var(--end-color);
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
-}
-
-button.topbar {
-    height: 100%;
-    font-size: 30px;
-    padding: 8px;
-    cursor: pointer;
-}
-
-button.topbar.home {
-    color: #00C000;
-    &:hover {
-        background-color: #00FF001F;
-    }
-}
-button.topbar.home.selected {
-    --start-color: #00FF002F;
-    --end-color: #00FF004A;
-    animation: topbar 2s infinite alternate;
-}
-
-button.topbar.projects {
-    color: #2020FF;
-    &:hover {
-        background-color: #0000FF3F;
-    }
-}
-button.topbar.projects.selected {
-    --start-color: #0000FF5F;
-    --end-color: #0000FF7F;
-    animation: topbar 2s infinite alternate;
-}
-
-button.topbar.games {
-    color: #E000E0;
-    &:hover {
-        background-color: #FF00FF2F;
-    }
-}
-button.topbar.games.selected {
-    --start-color: #FF00FF4F;
-    --end-color: #FF00FF6F;
-    animation: topbar 2s infinite alternate;
-}
-
-button.topbar.monsters {
-    color: red;
-    &:hover {
-        background-color: #FF00002F;
-    }
-}
-button.topbar.monsters.selected {
-    --start-color: #FF00006F;
-    --end-color: #FF00008F;
-    animation: topbar 2s infinite alternate;
-}
-
-nav.topbar {
-    height: 55px;
-    border-bottom: 1px solid gray;
 }
