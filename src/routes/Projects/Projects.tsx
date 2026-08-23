@@ -2,8 +2,8 @@
 import styles from './Projects.module.css';
 
 const projectList = [
-    { id: 1, title: 'proj1', tag: 'tag1', desc: 'desc1' },
-    { id: 2, title: 'proj2', tag: 'tag2', desc: 'desc2' },
+    { id: 1, title: 'HTMOS', tag: 'tag1', desc: 'A Work-in-Progress Operating System' },
+    { id: 2, title: 'Monsters', tag: 'tag2', desc: 'desc2' },
 ];
 
 export default function Projects() {

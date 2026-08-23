@@ -1,12 +1,12 @@
 /* src/routes/Home/Home.module.css */
 .container {
-    --theme-glow: rgba(59, 130, 246, 0.15);
-    --theme-accent: #38bdf8;
-    --theme-gradient: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+    --theme-glow: rgba(16, 185, 129, 0.15);
+    --theme-accent: #34d399;
+    --theme-gradient: linear-gradient(135deg, #34d399 0%, #10b981 100%);
 
-    background: rgba(15, 23, 42, 0.65);
+    background: rgba(6, 28, 21, 0.65);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(56, 189, 248, 0.2);
+    border: 1px solid rgba(52, 211, 153, 0.25);
     border-radius: 20px;
     padding: 3.5rem 2.5rem;
     text-align: center;
@@ -16,7 +16,7 @@
 .badge {
     display: inline-block;
     padding: 0.25rem 0.75rem;
-    background: rgba(56, 189, 248, 0.15);
+    background: rgba(52, 211, 153, 0.15);
     color: var(--theme-accent);
     border-radius: 9999px;
     font-size: 0.85rem;
@@ -28,14 +28,16 @@
     font-size: 2.5rem;
     font-weight: 800;
     background: var(--theme-gradient);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 1rem;
 }
 
 .subtitle {
-    color: #94a3b8;
+    color: #a7f3d0;
     max-width: 500px;
     margin: 0 auto;
     line-height: 1.6;
+    opacity: 0.85;
 }

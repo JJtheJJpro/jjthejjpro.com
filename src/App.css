@@ -28,9 +28,9 @@
    ---------------------------------------------------- */
 .app-layout[data-theme="home"] .bg-gradient-layer {
     background-image:
-        radial-gradient(at 10% 10%, rgba(56, 189, 248, 0.25) 0px, transparent 55%),
-        radial-gradient(at 90% 85%, rgba(59, 130, 246, 0.20) 0px, transparent 55%),
-        linear-gradient(135deg, #070e17 0%, #0b1528 100%);
+        radial-gradient(at 15% 15%, rgba(16, 185, 129, 0.22) 0px, transparent 55%),
+        radial-gradient(at 85% 80%, rgba(5, 150, 105, 0.18) 0px, transparent 55%),
+        linear-gradient(135deg, #04120e 0%, #081c16 100%);
 }
 
 /* ----------------------------------------------------
@@ -48,9 +48,9 @@
    ---------------------------------------------------- */
 .app-layout[data-theme="games"] .bg-gradient-layer {
     background-image:
-        radial-gradient(at 50% 5%, rgba(245, 158, 11, 0.20) 0px, transparent 50%),
-        radial-gradient(at 10% 90%, rgba(16, 185, 129, 0.25) 0px, transparent 55%),
-        linear-gradient(45deg, #061510 0%, #0d241b 100%);
+        radial-gradient(at 20% 20%, rgba(249, 115, 22, 0.28) 0px, transparent 55%),
+        radial-gradient(at 80% 85%, rgba(245, 158, 11, 0.22) 0px, transparent 55%),
+        linear-gradient(135deg, #190a03 0%, #261105 100%);
 }
 
 /* Floating Navigation Bar */
@@ -86,11 +86,11 @@
     color: #f3f4f6;
 }
 
-/* Tab active states matching respective theme glows */
+/* Navigation Active Tab Badges */
 .tab.active.home-tab {
-    background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: #ffffff;
-    box-shadow: 0 4px 14px rgba(56, 189, 248, 0.4);
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
 }
 
 .tab.active.projects-tab {
@@ -100,9 +100,9 @@
 }
 
 .tab.active.games-tab {
-    background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
+    background: linear-gradient(135deg, #f97316 0%, #f59e0b 100%);
     color: #ffffff;
-    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 4px 14px rgba(249, 115, 22, 0.45);
 }
 
 .content-area {

@@ -49,6 +49,7 @@ Resources:
       DistributionConfig:
         Aliases:
           - jjthejjpro.com
+          - www.jjthejjpro.com
         ViewerCertificate:
           AcmCertificateArn: arn:aws:acm:us-east-1:891377238333:certificate/719a039e-aefe-4cac-acd6-e1037491d237
           SslSupportMethod: sni-only
