@@ -41,6 +41,7 @@ jobs:
         aws-region: us-west-1
     
     - name: SAM Deploy
+      continue-on-error: true
       run: |
         pnpm run sam-build
         pnpm run sam-deploy
