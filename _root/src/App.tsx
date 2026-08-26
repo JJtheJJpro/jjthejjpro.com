@@ -17,7 +17,10 @@ function AppContent() {
 
     return (
         <div className="app-layout" data-theme={currentPath}>
-            <div className="bg-gradient-layer" />
+            {/* Deep Space Background Layer with Stars */}
+            <div className="bg-gradient-layer">
+                <div className="starfield" />
+            </div>
 
             <header className="navbar-container">
                 <nav className="nav-pills">
