@@ -7,6 +7,12 @@ on:
     paths:
       - 'htmos/**'
       - '.github/workflows/htmos.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: false
+        default: 'staging'
 
 jobs:
   deploy:

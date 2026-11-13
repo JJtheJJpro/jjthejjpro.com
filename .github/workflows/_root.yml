@@ -7,6 +7,12 @@ on:
     paths:
       - '_root/**'
       - '.github/workflows/_root.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: false
+        default: 'staging'
 
 jobs:
   deploy:
